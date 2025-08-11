@@ -48,6 +48,17 @@ int main(void) {
 	int array2[] = { 5, 2, 1, 4, 3 };
 
 
+	int biggest_value = array3[0];
+
+	for (int i = 1; i < 20; i++)
+	{
+		if (array[i] > biggest_value)
+		{
+			biggest_value = array[i];
+		}
+	}
+
+	display_array(array3, 20);
 	getchar();
 	display_sort(array3, 20, bubble_sort);
 

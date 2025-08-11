@@ -11,8 +11,7 @@
 
 #include "visualizer.h"
 
-
-void display_array(int array[], int size)
+int get_biggest_value(int array[], int size)
 {
 	int biggest_value = array[0];
 
@@ -23,17 +22,19 @@ void display_array(int array[], int size)
 			biggest_value = array[i];
 		}
 	}
+	return biggest_value;
+}
 
-	printf("\nBiggest value: %d\n\n", biggest_value);
+void display_array(int array[], int size)
+{
+	int biggest_value = get_biggest_value(array, size);
 
-	char row[500] = "";
+	char buffer[1500];
 
-	if (row == NULL)
-	{
-		printf("Memory allocation failed\n");
-		free(row);
-		exit(1);
-	}
+	strcpy(buffer, "\033[11A");
+	strcat(buffer, "\033[60D");
+
+	//printf("\nBiggest value: %d\n\n", biggest_value);
 
 	for (int i = 0; i < biggest_value; i++)
 	{
@@ -48,22 +49,21 @@ void display_array(int array[], int size)
 		{
 			if (i < biggest_value - array[j])
 			{
-				strcat(row, " ");
+				strcat(buffer, "   ");
 				//printf("\xE2\x96\x92 ");
 				//printf("   ");
 			}
 			else
 			{
-				strcat(row, "\xE2\x96\x88");
+				strcat(buffer, "\xE2\x96\x88\xE2\x96\x92 ");
 				//printf("\xE2\x96\x88\xE2\x96\x88 ");
 			}
 		}
 
 
-		strcat(row, "\n");
-		//free(row);
+		strcat(buffer, "\n");
 	}
-	printf("%s", row);
+	printf(buffer);
 }
 
 void Sleep2(int milliseconds) {
@@ -94,12 +94,11 @@ void swap(int array[], int size, int a, int b)
 	int temp = array[a];
 	array[a] = array[b];
 	array[b] = temp;
+
+	//ClearScreen();
 	display_array(array, size);
-
 	printf("\n- Sorting -");
-
-	Sleep2(50);
-	ClearScreen();
+	Sleep2(500);
 }
 
 void display_sort(int array[], int size, void(*f)(int[], int, void (*swapfunction)(int[], int, int, int)))
