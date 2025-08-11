@@ -11,6 +11,12 @@
 
 #include "visualizer.h"
 
+#define NC      "\033[00m"	// NC     = ANSI code for white text
+#define RED     "\033[31m"	// RED    = ANSI code for red text
+#define GREEN   "\033[32m"	// GREEN  = ANSI code for green text
+#define YELLOW  "\033[33m"	// YELLOW = ANSI code for yellow text
+#define BLUE    "\033[34m"	// BLUE   = ANSI code for blue text
+
 int get_biggest_value(int array[], int size)
 {
 	int biggest_value = array[0];
@@ -25,64 +31,49 @@ int get_biggest_value(int array[], int size)
 	return biggest_value;
 }
 
-void display_array(int array[], int size)
+void display_array(int array[], int size, int a, int b)
 {
 	int biggest_value = get_biggest_value(array, size);
 
-	char buffer[1500];
+	char buffer[3200];
 
-	strcpy(buffer, "\033[11A");
-	strcat(buffer, "\033[60D");
+	strcpy(buffer, "\033[25A");
+	strcat(buffer, "\r");
 
 	//printf("\nBiggest value: %d\n\n", biggest_value);
 
 	for (int i = 0; i < biggest_value; i++)
 	{
-		//char* row = malloc((2 * size) * sizeof(char));
-		//row = "";
-		//char *row = malloc(size * sizeof(char));
-
-
-		//row[0] = '\0';   // ensures the memory is an empty string
-
 		for (int j = 0; j < size; j++)
 		{
 			if (i < biggest_value - array[j])
 			{
 				strcat(buffer, "   ");
-				//printf("\xE2\x96\x92 ");
-				//printf("   ");
 			}
 			else
 			{
-				strcat(buffer, "\xE2\x96\x88\xE2\x96\x92 ");
-				//printf("\xE2\x96\x88\xE2\x96\x88 ");
+				if (j == a || j == b) {
+					strcat(buffer, RED);
+				}
+				else {
+					strcat(buffer, NC);
+				}
+				strcat(buffer, "\xE2\x96\x88\xE2\x96\x88 ");
 			}
 		}
-
 
 		strcat(buffer, "\n");
 	}
 	printf(buffer);
 }
 
-void Sleep2(int milliseconds) {
+void sleep2(int milliseconds) {
 #ifdef _WIN32
 	Sleep(milliseconds);
 #endif
 
 #ifdef linux
 	sleep(milliseconds);
-#endif
-}
-
-void ClearScreen(void) {
-#ifdef _WIN32
-	system("cls");
-#endif
-
-#ifdef linux
-	system("clear");
 #endif
 }
 
@@ -95,13 +86,66 @@ void swap(int array[], int size, int a, int b)
 	array[a] = array[b];
 	array[b] = temp;
 
-	//ClearScreen();
-	display_array(array, size);
+	display_array(array, size, a, b);
 	printf("\n- Sorting -");
-	Sleep2(500);
+	sleep2(10);
+}
+
+void finish_animation(int array[], int size)
+{
+	int biggest_value = get_biggest_value(array, size);
+
+	for (int h = 0; h < size; h++)
+	{
+		char buffer[3200];
+
+		strcpy(buffer, "\033[25A");
+		strcat(buffer, "\r");
+
+		//printf("\nBiggest value: %d\n\n", biggest_value);
+		for (int i = 0; i < biggest_value; i++)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				if (i < biggest_value - array[j])
+				{
+					strcat(buffer, "   ");
+				}
+				else
+				{
+					if (j <= h) {
+						strcat(buffer, GREEN);
+					}
+					else {
+						strcat(buffer, NC);
+					}
+					strcat(buffer, "\xE2\x96\x88\xE2\x96\x88 ");
+				}
+			}
+			strcat(buffer, "\n");
+		}
+		printf(buffer);
+	}
+
+	sleep2(10);
 }
 
 void display_sort(int array[], int size, void(*f)(int[], int, void (*swapfunction)(int[], int, int, int)))
 {
 	(*f)(array, size, swap);
+	finish_animation(array, size);
+}
+
+void shuffle(int array[], int size) {
+	int num_of_shuffles = size;
+
+	for (int i = 0; i < num_of_shuffles; i++)
+	{
+		int a = rand() % size;
+		int b = rand() % size;
+
+		int temp = array[a];
+		array[a] = array[b];
+		array[b] = temp;
+	}
 }

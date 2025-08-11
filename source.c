@@ -1,6 +1,5 @@
 ﻿#include <stdlib.h>
 #include <locale.h>
-#include <string.h>
 #include <stdio.h>
 
 #ifdef linux
@@ -9,7 +8,9 @@
 
 #include "visualizer.h"
 
-void display_array(int array[], int size);
+#define ARRAY_SIZE 20
+
+void display_array(int array[], int size, int a, int b);
 
 void swap(int array[], int size, int a, int b);
 
@@ -37,30 +38,19 @@ void bubble_sort(int array[], int size, void(*swap)(int[], int, int, int))
 int main(void) {
 	setlocale(LC_ALL, "en_US.UTF-8");
 
-	int array3[20];
-	srand(0);
+	int array[ARRAY_SIZE];
 
-	for (int i = 0; i < 20; i++) {
-		array3[i] = (rand() % 10) + 1; // Gera números aleatórios entre 0 e 99
+	for (int i = 0; i < ARRAY_SIZE; i++) {
+		array[i] = i + 1;
 	}
 
-	int array[] = { 1, 2, 3, 4, 5 };
-	int array2[] = { 5, 2, 1, 4, 3 };
+	shuffle(array, ARRAY_SIZE);
 
-
-	int biggest_value = array3[0];
-
-	for (int i = 1; i < 20; i++)
-	{
-		if (array[i] > biggest_value)
-		{
-			biggest_value = array[i];
-		}
-	}
-
-	display_array(array3, 20);
+	display_array(array, ARRAY_SIZE, -1, -1);
 	getchar();
-	display_sort(array3, 20, bubble_sort);
+	display_sort(array, ARRAY_SIZE, bubble_sort);
+	printf("\r-- Done --");
+	getchar();
 
 	return 69;
 }
